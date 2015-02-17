@@ -6,7 +6,6 @@
     xmlns:f="http://data.comsode.eu/xslt/functions#"
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns:skos="http://www.w3.org/2004/02/skos/core#"
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     version="2.0"
     xpath-default-namespace="http://www.loc.gov/MARC21/slim">
     

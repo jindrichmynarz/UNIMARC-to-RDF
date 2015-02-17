@@ -17,7 +17,12 @@
     xpath-default-namespace="http://www.loc.gov/MARC21/slim">
     
     <!-- Functions -->
+    
     <xsl:import href="lib/functions.xsl" />
+    
+    <!-- Parameters -->
+    
+    <xsl:param name="ns">http://data.snk.sk/resource/</xsl:param>
     
     <!-- Partially applied functions -->
     
@@ -32,9 +37,7 @@
         <xsl:value-of select="f:getInstanceUri($ns, $class)"/>
     </xsl:function>
     
-    <!-- Parameters -->
-    
-    <xsl:param name="ns">http://data.snk.sk/resource/</xsl:param>
+    <!-- Output -->
     
     <xsl:output encoding="UTF-8" indent="yes" method="xml" normalization-form="NFC" />
     <xsl:strip-space elements="*"/>
@@ -132,18 +135,19 @@
         <xsl:variable name="modifiedRecordCode" select="substring(., 22, 1)"/>
         <xsl:variable name="languageOfCataloguing" select="substring(., 23, 3)"/>
         <xsl:variable name="transliterationCode" select="substring(., 26, 1)"/>
-        <xsl:variable name="characterSets" select="substring(., 27, 4)"/>
-        <xsl:variable name="additionalCharacterSets" select="substring(., 31, 4)"/>
+        <xsl:variable name="characterSets" select="f:partition(substring(., 27, 4), 2)"/>
+        <xsl:variable name="additionalCharacterSets" select="f:partition(substring(., 31, 4), 2)"/>
         <xsl:variable name="scriptOfTheTitle" select="substring(., 35, 2)"/>
     </xsl:template>
     
     <!-- General processing data | General processing data -->
     <xsl:template match="subfield[@code = 'a'][parent::datafield[@tag = '100']]" mode="document">
         <xsl:variable name="targetAudienceNs">http://iflastandards.info/ns/unimarc/terms/tac#</xsl:variable>
-        <xsl:variable name="targetAudienceCode" select="substring(., 18, 3)"/>
-        <!-- TODO: Handle invalid values
+        <xsl:variable name="targetAudienceCode" select="f:partition(substring(., 18, 3), 1)"/>
+        <!-- If $targetAudienceCode is in the enumeration of valid codes. -->
+        <xsl:if test="$targetAudienceCode = ('a', 'b', 'c', 'd', 'e', 'k', 'm', 'u')">
             <dcterms:audience rdf:resource="{concat($targetAudienceNs, $targetAudienceCode)}"/>
-        -->
+        </xsl:if>
     </xsl:template>
     
     <!-- Language of the item -->
@@ -190,8 +194,8 @@
     
     <!-- Coded data field: textual material, monographic | Monograph Coded Data -->
     <xsl:template match="subfield[@code = 'a'][parent::datafield[@tag = '105']]" mode="document">
-        <xsl:variable name="illustrationCodes" select="substring(., 1, 4)"/>
-        <xsl:variable name="formOfContentsCodes" select="substring(., 5, 4)"/>
+        <xsl:variable name="illustrationCodes" select="f:partition(substring(., 1, 4), 1)"/>
+        <xsl:variable name="formOfContentsCodes" select="f:partition(substring(., 5, 4), 1)"/>
         <xsl:variable name="conferenceOrMeetingCode" select="substring(., 9, 1)"/>
         <xsl:variable name="festschriftIndicator" select="substring(., 10, 1)"/>
         <xsl:variable name="indexIndicator" select="substring(., 11, 1)"/>
@@ -210,9 +214,10 @@
     
     <!-- Coded data field: antiquarian - general | Antiquarian coded data - general -->
     <xsl:template match="subfield[@code = 'a'][parent::datafield[@tag = '140']]" mode="document">
-        <xsl:variable name="illustrationCodesBook" select="substring(., 1, 3)"/>
-        <xsl:variable name="illustrationCodesFullPagePlates" select="substring(., 4, 3)"/>
+        <xsl:variable name="illustrationCodesBook" select="f:partition(substring(., 1, 3), 1)"/>
+        <xsl:variable name="illustrationCodesFullPagePlates" select="f:partition(substring(., 4, 3), 1)"/>
         <xsl:variable name="illustrationCodeTechnique" select="substring(., 8, 1)"/>
+        <xsl:variable name="formOfContentsCode" select="f:partition(substring(., 9, 8), 2)"/>
     </xsl:template>
     
     <!-- Title and statement of responsibility -->
