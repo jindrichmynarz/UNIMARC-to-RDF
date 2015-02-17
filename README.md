@@ -10,7 +10,8 @@ The stylesheets accepts a single parameter called `ns` that sets the default nam
 
 ## Limitations
 
-The transformation uses direct Java calls to `java.util.UUID#randomUUID` method for generating URIs. This is supported by a few XSL processors, such as [Saxon](http://saxonica.com/products/products.xml) in the personal or enterprise edition.
+* The scope of the transformation is limited. It only covers some of the most frequently occuring fields and subfields of UNIMARC. If you want to know frequency statistics of your MARCXML dataset, you can use [this XQuery 3.0 query](https://gist.github.com/jindrichmynarz/3fe8392fe9ecfe0a5e3f). 
+* The transformation uses direct Java calls to `java.util.UUID#randomUUID` method for generating URIs. This is supported by a few XSL processors, such as [Saxon](http://saxonica.com/products/products.xml) in the personal or enterprise edition.
 
 ## Acknowledgements
 
