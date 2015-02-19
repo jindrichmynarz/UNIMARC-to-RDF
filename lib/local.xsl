@@ -6,13 +6,13 @@
     xmlns:f="http://data.comsode.eu/xslt/functions#"
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+    exclude-result-prefixes="f"
     version="2.0"
     xpath-default-namespace="http://www.loc.gov/MARC21/slim">
     
     <!-- Local definitions of the 9XX fields by the Slovak National Library.
-    Include stylesheet that needs its including stylesheet to provide the $ns variable. -->
-    
-    <xsl:import href="functions.xsl"/>
+    Include stylesheet that needs its including stylesheet to provide the $ns variable
+    and import the functions.xsl library. -->
     
     <!-- Code of record's creator -->
     <xsl:template match="subfield[@code = 'a'][parent::datafield[@tag = '974']]" mode="record">
