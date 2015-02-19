@@ -24,7 +24,7 @@
     
     <xsl:param name="ns">http://data.snk.sk/resource/</xsl:param>
     
-    <!-- Partially applied functions -->
+    <!-- "Partially applied" functions -->
     
     <xsl:function name="fl:getInstanceUri" as="xsd:anyURI">
         <xsl:param name="class" as="xsd:string"/>
@@ -88,17 +88,6 @@
         </adms:identifier>
     </xsl:template>
     
-    <!-- National bibliography number -->
-    <xsl:template match="datafield[@tag = '020']" mode="record">
-        <xsl:variable name="identifier" select="subfield[@code = 'b']"/>
-        <adms:identifier>
-            <adms:Identifier rdf:about="{f:getInstanceUri($ns, 'Identifier', $identifier)}">
-                <skos:notation><xsl:value-of select="$identifier"/></skos:notation>
-                <xsl:apply-templates mode="record"/>
-            </adms:Identifier>
-        </adms:identifier>
-    </xsl:template>
-    
     <!-- Record's creator -->
     <xsl:template match="datafield[@tag = '020' or @tag = '801' or @tag = '974']" mode="record">
         <xsl:param name="recordCreatorUri" tunnel="yes"/>
@@ -120,6 +109,15 @@
         </schema:address>
     </xsl:template>
     
+    <!-- National bibliography number -->
+    <xsl:template match="subfield[@code = 'b'][parent::datafield[@tag = '020']]" mode="record">
+        <adms:identifier>
+            <adms:Identifier rdf:about="{f:getInstanceUri($ns, 'Identifier', .)}">
+                <skos:notation><xsl:value-of select="."/></skos:notation>
+            </adms:Identifier>
+        </adms:identifier>
+    </xsl:template>
+    
     <!-- General processing data -->
     <xsl:template match="datafield[@tag = '100']">
         <xsl:apply-templates/>
@@ -127,7 +125,11 @@
     
     <!-- General processing data | General processing data -->
     <xsl:template match="subfield[@code = 'a'][parent::datafield[@tag = '100']]" mode="record">
-        <dcterms:created rdf:datatype="&xsd;date"><xsl:value-of select="f:parseYYYYMMDD(substring(., 1, 8))"/></dcterms:created>
+        <dcterms:created>
+            <xsl:call-template name="getDate">
+                <xsl:with-param name="date" select="f:parseYYYYMMDD(substring(., 1, 8))"/>
+            </xsl:call-template>
+        </dcterms:created>
         <xsl:variable name="typeOfPublicationDate" select="substring(., 9, 1)"/>
         <xsl:variable name="publicationDate1" select="substring(., 10, 4)"/>
         <xsl:variable name="publicationDate2" select="substring(., 14, 4)"/>
@@ -461,5 +463,16 @@
     
     <!-- Catch-all empty template -->
     <xsl:template match="text()|@*" mode="#all"/>
+    
+    <!-- Named templates -->
+    
+    <!-- If $date is a valid xsd:date, returns it with xsd:date datatype. -->
+    <xsl:template name="getDate">
+        <xsl:param name="date" as="xsd:string"/>
+        <xsl:if test="$date castable as xsd:date">
+            <xsl:attribute name="rdf:datatype">&xsd;date</xsl:attribute>
+        </xsl:if>
+        <xsl:value-of select="$date"/>
+    </xsl:template>
     
 </xsl:stylesheet>
