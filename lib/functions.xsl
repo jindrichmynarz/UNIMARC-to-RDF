@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xsl:stylesheet SYSTEM "entities.dtd">
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:f="http://data.comsode.eu/xslt/functions#"
     xmlns:uuid="java:java.util.UUID"
@@ -37,7 +38,7 @@
     </xsl:function>
     
     <!-- Converts dates formatted as YYYYMMDD to YYYY-MM-DD xsd:date. -->
-    <xsl:function name="f:parseYYYYMMDD" as="xsd:date">
+    <xsl:function name="f:parseYYYYMMDD" as="xsd:string">
         <xsl:param name="dateString" as="xsd:string"/>
         <xsl:variable name="cleanerDateString" select="replace($dateString, 'O', '0')"/> <!-- Fix common typo. -->
         <xsl:variable name="year" select="xsd:integer(substring($cleanerDateString, 1, 4))" as="xsd:integer" />
